@@ -1,0 +1,13 @@
+Index: tttool-nofib/vector-0.11.0.0/Data/Vector.hs
+===================================================================
+--- tttool-nofib.orig/vector-0.11.0.0/Data/Vector.hs	2016-12-07 15:27:32.553571198 -0500
++++ tttool-nofib/vector-0.11.0.0/Data/Vector.hs	2016-12-07 17:16:13.591206299 -0500
+@@ -161,7 +161,7 @@
+ 
+ import qualified Data.Vector.Generic as G
+ import           Data.Vector.Mutable  ( MVector(..) )
+-import           Data.Primitive.Array
++import           Data.Primitive.Array hiding ( fromList, fromListN )
+ import qualified Data.Vector.Fusion.Bundle as Bundle
+ 
+ import Control.DeepSeq ( NFData, rnf )

@@ -1,0 +1,52 @@
+Index: tttool-nofib/ansi-terminal-0.6.2.3/System/Console/ANSI.hs
+===================================================================
+--- tttool-nofib.orig/ansi-terminal-0.6.2.3/System/Console/ANSI.hs	2016-12-07 17:13:28.979041158 -0500
++++ tttool-nofib/ansi-terminal-0.6.2.3/System/Console/ANSI.hs	2016-12-07 17:13:36.126875431 -0500
+@@ -1,3 +1,4 @@
++{-# LANGUAGE CPP #-}
+ -- | Provides ANSI terminal support for Windows and ANSI terminal software running on a Unix-like operating system.
+ --
+ -- The ANSI escape codes are described at <http://en.wikipedia.org/wiki/ANSI_escape_code> and provide a rich range of
+Index: tttool-nofib/ansi-terminal-0.6.2.3/System/Console/ANSI/Unix.hs
+===================================================================
+--- tttool-nofib.orig/ansi-terminal-0.6.2.3/System/Console/ANSI/Unix.hs	2016-12-07 16:37:13.870157947 -0500
++++ tttool-nofib/ansi-terminal-0.6.2.3/System/Console/ANSI/Unix.hs	2016-12-07 17:13:48.186595641 -0500
+@@ -1,3 +1,4 @@
++{-# LANGUAGE CPP #-}
+ {-# OPTIONS_HADDOCK hide #-}
+ module System.Console.ANSI.Unix (
+ #include "Exports-Include.hs"
+@@ -122,4 +123,4 @@
+ -- as well as that in the actual window title.  This is chosen for consistent behaviour between Unixes and Windows.
+ setTitleCode title = "\ESC]0;" ++ filter (/= '\007') title ++ "\007"
+ 
+-hSetTitle h title = hPutStr h $ setTitleCode title
+\ No newline at end of file
++hSetTitle h title = hPutStr h $ setTitleCode title
+Index: tttool-nofib/random-1.1/System/Random.hs
+===================================================================
+--- tttool-nofib.orig/random-1.1/System/Random.hs	2016-12-07 16:10:54.726588588 -0500
++++ tttool-nofib/random-1.1/System/Random.hs	2016-12-07 17:13:02.663650595 -0500
+@@ -1,3 +1,4 @@
++{-# LANGUAGE CPP #-}
+ #if __GLASGOW_HASKELL__ >= 701
+ {-# LANGUAGE Trustworthy #-}
+ #endif
+Index: tttool-nofib/parsec-3.1.11/Text/Parsec/Prim.hs
+===================================================================
+--- tttool-nofib.orig/parsec-3.1.11/Text/Parsec/Prim.hs	2016-12-07 15:25:28.213485978 -0500
++++ tttool-nofib/parsec-3.1.11/Text/Parsec/Prim.hs	2016-12-07 17:29:28.508648953 -0500
+@@ -1,3 +1,4 @@
++{-# LANGUAGE CPP #-}
+ -----------------------------------------------------------------------------
+ -- |
+ -- Module      :  Text.Parsec.Prim
+Index: tttool-nofib/parsec-3.1.11/Text/Parsec/Token.hs
+===================================================================
+--- tttool-nofib.orig/parsec-3.1.11/Text/Parsec/Token.hs	2016-12-07 15:25:28.213485978 -0500
++++ tttool-nofib/parsec-3.1.11/Text/Parsec/Token.hs	2016-12-07 17:30:40.375008970 -0500
+@@ -1,3 +1,4 @@
++{-# LANGUAGE CPP #-}
+ -----------------------------------------------------------------------------
+ -- |
+ -- Module      :  Text.Parsec.Token

@@ -1,0 +1,121 @@
+Index: tttool-nofib/scientific-0.3.4.9/src/Data/ByteString/Builder/Scientific.hs
+===================================================================
+--- tttool-nofib.orig/scientific-0.3.4.9/src/Data/ByteString/Builder/Scientific.hs	2016-12-07 17:37:22.341707701 -0500
++++ tttool-nofib/scientific-0.3.4.9/src/Data/ByteString/Builder/Scientific.hs	2016-12-07 17:37:35.357403877 -0500
+@@ -15,7 +15,7 @@
+ import           Data.ByteString.Builder (Builder, string8, char8, intDec)
+ import           Data.ByteString.Builder.Extra (byteStringCopy)
+ 
+-import Utils (roundTo, i2d)
++import SciUtils (roundTo, i2d)
+ 
+ #if !MIN_VERSION_base(4,8,0)
+ import Data.Monoid                  (mempty)
+Index: tttool-nofib/scientific-0.3.4.9/src/Data/Scientific.hs
+===================================================================
+--- tttool-nofib.orig/scientific-0.3.4.9/src/Data/Scientific.hs	2016-12-07 17:37:24.825649728 -0500
++++ tttool-nofib/scientific-0.3.4.9/src/Data/Scientific.hs	2016-12-07 17:37:38.897321225 -0500
+@@ -125,7 +125,7 @@
+ 
+ import GHC.Integer        (quotRemInteger, quotInteger)
+ import GHC.Integer.Compat (divInteger)
+-import Utils              (roundTo)
++import SciUtils              (roundTo)
+ 
+ 
+ ----------------------------------------------------------------------
+Index: tttool-nofib/scientific-0.3.4.9/src/Data/Text/Lazy/Builder/Scientific.hs
+===================================================================
+--- tttool-nofib.orig/scientific-0.3.4.9/src/Data/Text/Lazy/Builder/Scientific.hs	2016-12-07 17:37:27.189594552 -0500
++++ tttool-nofib/scientific-0.3.4.9/src/Data/Text/Lazy/Builder/Scientific.hs	2016-12-07 17:37:43.065223897 -0500
+@@ -14,7 +14,7 @@
+ import Data.Text.Lazy.Builder       (Builder, fromString, singleton, fromText)
+ import Data.Text.Lazy.Builder.Int   (decimal)
+ import qualified Data.Text as T     (replicate)
+-import Utils (roundTo, i2d)
++import SciUtils (roundTo, i2d)
+ 
+ #if MIN_VERSION_base(4,5,0)
+ import Data.Monoid                  ((<>))
+Index: tttool-nofib/scientific-0.3.4.9/src/SciUtils.hs
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ tttool-nofib/scientific-0.3.4.9/src/SciUtils.hs	2016-12-07 17:36:48.334500918 -0500
+@@ -0,0 +1,36 @@
++{-# LANGUAGE BangPatterns #-}
++{-# LANGUAGE MagicHash #-}
++{-# LANGUAGE UnboxedTuples #-}
++
++module SciUtils
++    ( roundTo
++    , i2d
++    ) where
++
++import GHC.Base (Int(I#), Char(C#), chr#, ord#, (+#))
++
++roundTo :: Int -> [Int] -> (Int, [Int])
++roundTo d is =
++  case f d True is of
++    x@(0,_) -> x
++    (1,xs)  -> (1, 1:xs)
++    _       -> error "roundTo: bad Value"
++ where
++  base = 10
++
++  b2 = base `quot` 2
++
++  f n _ []     = (0, replicate n 0)
++  f 0 e (x:xs) | x == b2 && e && all (== 0) xs = (0, [])   -- Round to even when at exactly half the base
++               | otherwise = (if x >= b2 then 1 else 0, [])
++  f n _ (i:xs)
++     | i' == base = (1,0:ds)
++     | otherwise  = (0,i':ds)
++      where
++       (c,ds) = f (n-1) (even i) xs
++       i'     = c + i
++
++-- | Unsafe conversion for decimal digits.
++{-# INLINE i2d #-}
++i2d :: Int -> Char
++i2d (I# i#) = C# (chr# (ord# '0'# +# i# ))
+Index: tttool-nofib/scientific-0.3.4.9/src/Utils.hs
+===================================================================
+--- tttool-nofib.orig/scientific-0.3.4.9/src/Utils.hs	2016-12-07 15:40:27.578728410 -0500
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,36 +0,0 @@
+-{-# LANGUAGE BangPatterns #-}
+-{-# LANGUAGE MagicHash #-}
+-{-# LANGUAGE UnboxedTuples #-}
+-
+-module Utils
+-    ( roundTo
+-    , i2d
+-    ) where
+-
+-import GHC.Base (Int(I#), Char(C#), chr#, ord#, (+#))
+-
+-roundTo :: Int -> [Int] -> (Int, [Int])
+-roundTo d is =
+-  case f d True is of
+-    x@(0,_) -> x
+-    (1,xs)  -> (1, 1:xs)
+-    _       -> error "roundTo: bad Value"
+- where
+-  base = 10
+-
+-  b2 = base `quot` 2
+-
+-  f n _ []     = (0, replicate n 0)
+-  f 0 e (x:xs) | x == b2 && e && all (== 0) xs = (0, [])   -- Round to even when at exactly half the base
+-               | otherwise = (if x >= b2 then 1 else 0, [])
+-  f n _ (i:xs)
+-     | i' == base = (1,0:ds)
+-     | otherwise  = (0,i':ds)
+-      where
+-       (c,ds) = f (n-1) (even i) xs
+-       i'     = c + i
+-
+--- | Unsafe conversion for decimal digits.
+-{-# INLINE i2d #-}
+-i2d :: Int -> Char
+-i2d (I# i#) = C# (chr# (ord# '0'# +# i# ))
