@@ -10,7 +10,7 @@ can easily build and measure, even with a development compiler, and without
 additional help of `cabal` or `stack` (which might not work nicely with GHC
 HEAD).
 
-Either this repository will be abandonned, or the code merged into nofib.
+Either this repository will be abandoned, or the code merged into nofib.
 
 
 Why tttool
